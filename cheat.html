@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Answers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        .header p {
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        select option {
+            background: #16213e;
+            color: white;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .answer-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .answer-btn:active {
+            transform: translateY(0);
+        }
+
+        .answer-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .response-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .response-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .response-section h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .response-content {
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            color: #ff6b6b;
+            font-style: italic;
+        }
+
+        .warning {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #ffcccb;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Home</a>
+    
+    <div class="header">
+        <h1>⚡ Quick Answers</h1>
+        <p>Fast solutions mode</p>
+    </div>
+
+    <div class="container">
+        <div class="warning">
+            ⚠️ <strong>Note:</strong> While this gives you quick answers, you learn best by working through problems yourself!
+        </div>
+
+        <div class="input-section">
+            <label for="subject">Select Subject:</label>
+            <select id="subject">
+                <option value="">Choose a subject...</option>
+                <option value="math">Mathematics</option>
+                <option value="science">Science</option>
+                <option value="english">English</option>
+                <option value="history">History</option>
+                <option value="geography">Geography</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="input-section">
+            <label for="question">Your Question:</label>
+            <textarea id="question" placeholder="Type your homework question here..."></textarea>
+        </div>
+
+        <button class="answer-btn" onclick="getAnswer()">Get Answer Now</button>
+
+        <div class="response-section" id="responseSection">
+            <h3>Answer:</h3>
+            <div class="response-content" id="responseContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function getAnswer() {
+            const subject = document.getElementById('subject').value;
+            const question = document.getElementById('question').value.trim();
+            const responseSection = document.getElementById('responseSection');
+            const responseContent = document.getElementById('responseContent');
+            const answerBtn = document.querySelector('.answer-btn');
+
+            if (!subject) {
+                alert('Please select a subject!');
+                return;
+            }
+
+            if (!question) {
+                alert('Please enter your question!');
+                return;
+            }
+
+            // Show loading state
+            answerBtn.disabled = true;
+            answerBtn.textContent = 'Generating answer...';
+            responseSection.classList.add('show');
+            responseContent.innerHTML = '<p class="loading">Processing your question...</p>';
+
+            // Simulate answer generation
+            setTimeout(() => {
+                const answer = generateAnswer(subject, question);
+                responseContent.innerHTML = answer;
+                answerBtn.disabled = false;
+                answerBtn.textContent = 'Get Answer Now';
+            }, 2000);
+        }
+
+        function generateAnswer(subject, question) {
+            // This provides sample-style answers based on subject
+            let response = `<p><strong>Your Question:</strong> ${question}</p><hr style="margin: 15px 0; border: none; border-top: 1px solid rgba(255,255,255,0.2);">`;
+            
+            response += `<p><strong>Answer:</strong></p>`;
+            
+            const answers = {
+                math: `<p>To solve this problem:</p>
+                       <ol>
+                       <li>Identify the known values and what you're solving for</li>
+                       <li>Apply the relevant formula or theorem</li>
+                       <li>Solve step by step, showing your work</li>
+                       <li>Check your answer by substituting back</li>
+                       </ol>
+                       <p><em>💡 Tip: For the exact numerical answer, try using a calculator or working through the steps yourself - you'll understand it better!</em></p>`,
+                
+                science: `<p>Key concepts to address this question:</p>
+                         <ul>
+                         <li>Understand the scientific principle involved</li>
+                         <li>Identify variables and relationships</li>
+                         <li>Apply the relevant scientific laws or theories</li>
+                         <li>Explain the reasoning behind your answer</li>
+                         </ul>
+                         <p><em>💡 Remember to use proper scientific terminology and cite evidence!</em></p>`,
+                
+                english: `<p>Structure your answer like this:</p>
+                         <ol>
+                         <li>Introduction: State your main point or thesis</li>
+                         <li>Body: Provide evidence and examples from the text</li>
+                         <li>Analysis: Explain how your evidence supports your point</li>
+                         <li>Conclusion: Summarize your argument</li>
+                         </ol>
+                         <p><em>💡 Use specific quotes and literary devices to strengthen your answer!</em></p>`,
+                
+                history: `<p>Framework for your answer:</p>
+                         <ul>
+                         <li>Context: When and where did this occur?</li>
+                         <li>Key figures: Who was involved?</li>
+                         <li>Causes: What led to this event?</li>
+                         <li>Effects: What were the consequences?</li>
+                         <li>Significance: Why does this matter?</li>
+                         </ul>
+                         <p><em>💡 Include specific dates and connect events to broader historical patterns!</em></p>`,
+                
+                geography: `<p>Consider these aspects:</p>
+                           <ul>
+                           <li>Location: Where is this place?</li>
+                           <li>Physical features: What are the natural characteristics?</li>
+                           <li>Human geography: How do people interact with this place?</li>
+                           <li>Connections: How does this relate to other places?</li>
+                           </ul>
+                           <p><em>💡 Use maps and diagrams to support your answer!</em></p>`,
+                
+                other: `<p>Approach this question by:</p>
+                       <ol>
+                       <li>Breaking it down into smaller parts</li>
+                       <li>Identifying what you already know</li>
+                       <li>Research any unfamiliar concepts</li>
+                       <li>Organize your thoughts before writing</li>
+                       <li>Review and revise your answer</li>
+                       </ol>
+                       <p><em>💡 Take your time and think critically about the question!</em></p>`
+            };
+            
+            response += answers[subject] || answers.other;
+            response += `<p style="margin-top: 20px; padding: 15px; background: rgba(255,107,107,0.1); border-radius: 8px;">
+                        <strong>📚 Learning Reminder:</strong> This framework gives you direction, but the real learning happens when you fill in the details yourself. 
+                        Try working through it and check your textbook or notes for specific information!</p>`;
+            
+            return response;
+        }
+    </script>
+</body>
+  </html>
