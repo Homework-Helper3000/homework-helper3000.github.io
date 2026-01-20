@@ -1,1 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .help-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .help-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .help-btn:active {
+            transform: translateY(0);
+        }
+
+        .help-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .response-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .response-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .response-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .response-content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Home</a>
+    
+    <div class="header">
+        <h1>📚 Homework Helper</h1>
+        <p>Get help with your assignments</p>
+    </div>
+
+    <div class="container">
+        <div class="input-section">
+            <label for="subject">Select Subject:</label>
+            <select id="subject">
+                <option value="">Choose a subject...</option>
+                <option value="math">Mathematics</option>
+                <option value="science">Science</option>
+                <option value="english">English</option>
+                <option value="history">History</option>
+                <option value="geography">Geography</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="input-section">
+            <label for="question">Your Question:</label>
+            <textarea id="question" placeholder="Type your homework question here..."></textarea>
+        </div>
+
+        <button class="help-btn" onclick="getHelp()">Get Help</button>
+
+        <div class="response-section" id="responseSection">
+            <h3>Here's some help:</h3>
+            <div class="response-content" id="responseContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function getHelp() {
+            const subject = document.getElementById('subject').value;
+            const question = document.getElementById('question').value.trim();
+            const responseSection = document.getElementById('responseSection');
+            const responseContent = document.getElementById('responseContent');
+            const helpBtn = document.querySelector('.help-btn');
+
+            if (!subject) {
+                alert('Please select a subject!');
+                return;
+            }
+
+            if (!question) {
+                alert('Please enter your question!');
+                return;
+            }
+
+            // Show loading state
+            helpBtn.disabled = true;
+            helpBtn.textContent = 'Thinking...';
+            responseSection.classList.add('show');
+            responseContent.innerHTML = '<p class="loading">Analyzing your question...</p>';
+
+            // Simulate AI response (in a real app, you'd call an API here)
+            setTimeout(() => {
+                const response = generateResponse(subject, question);
+                responseContent.innerHTML = response;
+                helpBtn.disabled = false;
+                helpBtn.textContent = 'Get Help';
+            }, 1500);
+        }
+
+        function generateResponse(subject, question) {
+            // This is a simplified helper - in a real app, you'd integrate with an AI API
+            const tips = {
+                math: [
+                    "Break down the problem into smaller steps",
+                    "Draw a diagram if it helps visualize the problem",
+                    "Check if you need to use formulas you've learned",
+                    "Make sure to show your work step by step"
+                ],
+                science: [
+                    "Identify the key concepts involved",
+                    "Think about what you've learned in class about this topic",
+                    "Look for cause and effect relationships",
+                    "Use the scientific method if conducting an experiment"
+                ],
+                english: [
+                    "Read the question carefully and identify what's being asked",
+                    "Make an outline before writing longer responses",
+                    "Use proper grammar and punctuation",
+                    "Support your answers with examples from the text"
+                ],
+                history: [
+                    "Consider the time period and context",
+                    "Look for cause and effect relationships",
+                    "Think about different perspectives on events",
+                    "Use specific dates and names to support your answer"
+                ],
+                geography: [
+                    "Use maps and diagrams to help understand the question",
+                    "Consider both physical and human geography factors",
+                    "Think about relationships between places",
+                    "Use specific locations and examples"
+                ],
+                other: [
+                    "Read the question carefully",
+                    "Identify what you already know about the topic",
+                    "Break complex problems into smaller parts",
+                    "Don't hesitate to ask your teacher for clarification"
+                ]
+            };
+
+            const subjectTips = tips[subject] || tips.other;
+            
+            let response = `<p><strong>Question:</strong> ${question}</p>`;
+            response += `<p><strong>Subject:</strong> ${subject.charAt(0).toUpperCase() + subject.slice(1)}</p>`;
+            response += `<p><strong>Tips to help you:</strong></p><ul>`;
+            
+            subjectTips.forEach(tip => {
+                response += `<li>${tip}</li>`;
+            });
+            
+            response += `</ul>`;
+            response += `<p style="margin-top: 15px;"><em>💡 Remember: The best way to learn is to try solving it yourself first! Use these tips as guidance.</em></p>`;
+            
+            return response;
+        }
+    </script>
+</body>
+</html>
