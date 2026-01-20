@@ -29,6 +29,19 @@
             margin-bottom: 10px;
         }
 
+        .cheat-link {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .cheat-link:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .back-btn {
             position: absolute;
             top: 20px;
@@ -43,19 +56,6 @@
 
         .back-btn:hover {
             background: rgba(255, 255, 255, 0.3);
-        }
-
-        .cheat-link {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.4);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .cheat-link:hover {
-            color: rgba(255, 255, 255, 0.7);
         }
 
         .container {
@@ -147,6 +147,15 @@
             line-height: 1.6;
         }
 
+        .response-content ol, .response-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .response-content li {
+            margin-bottom: 10px;
+        }
+
         .loading {
             text-align: center;
             color: #667eea;
@@ -214,7 +223,7 @@
     <script>
         function getHelp() {
             const subject = document.getElementById('subject').value;
-            const question = document.getElementById('question').value.trim();
+            const question = document.getElementById('question').value.trim().toLowerCase();
             const responseSection = document.getElementById('responseSection');
             const responseContent = document.getElementById('responseContent');
             const helpBtn = document.querySelector('.help-btn');
@@ -229,75 +238,210 @@
                 return;
             }
 
-            // Show loading state
             helpBtn.disabled = true;
             helpBtn.textContent = 'Thinking...';
             responseSection.classList.add('show');
             responseContent.innerHTML = '<p class="loading">Analyzing your question...</p>';
 
-            // Simulate AI response (in a real app, you'd call an API here)
             setTimeout(() => {
                 const response = generateResponse(subject, question);
                 responseContent.innerHTML = response;
                 helpBtn.disabled = false;
                 helpBtn.textContent = 'Get Help';
-            }, 1500);
+            }, 1000);
         }
 
         function generateResponse(subject, question) {
-            // This is a simplified helper - in a real app, you'd integrate with an AI API
-            const tips = {
-                math: [
-                    "Break down the problem into smaller steps",
-                    "Draw a diagram if it helps visualize the problem",
-                    "Check if you need to use formulas you've learned",
-                    "Make sure to show your work step by step"
-                ],
-                science: [
-                    "Identify the key concepts involved",
-                    "Think about what you've learned in class about this topic",
-                    "Look for cause and effect relationships",
-                    "Use the scientific method if conducting an experiment"
-                ],
-                english: [
-                    "Read the question carefully and identify what's being asked",
-                    "Make an outline before writing longer responses",
-                    "Use proper grammar and punctuation",
-                    "Support your answers with examples from the text"
-                ],
-                history: [
-                    "Consider the time period and context",
-                    "Look for cause and effect relationships",
-                    "Think about different perspectives on events",
-                    "Use specific dates and names to support your answer"
-                ],
-                geography: [
-                    "Use maps and diagrams to help understand the question",
-                    "Consider both physical and human geography factors",
-                    "Think about relationships between places",
-                    "Use specific locations and examples"
-                ],
-                other: [
-                    "Read the question carefully",
-                    "Identify what you already know about the topic",
-                    "Break complex problems into smaller parts",
-                    "Don't hesitate to ask your teacher for clarification"
-                ]
-            };
-
-            const subjectTips = tips[subject] || tips.other;
-            
             let response = `<p><strong>Question:</strong> ${question}</p>`;
-            response += `<p><strong>Subject:</strong> ${subject.charAt(0).toUpperCase() + subject.slice(1)}</p>`;
-            response += `<p><strong>Tips to help you:</strong></p><ul>`;
-            
-            subjectTips.forEach(tip => {
-                response += `<li>${tip}</li>`;
-            });
-            
-            response += `</ul>`;
-            response += `<p style="margin-top: 15px;"><em>💡 Remember: The best way to learn is to try solving it yourself first! Use these tips as guidance.</em></p>`;
-            
+            response += `<p><strong>Subject:</strong> ${subject.charAt(0).toUpperCase() + subject.slice(1)}</p><hr style="margin: 15px 0;">`;
+
+            // Detect specific question types and provide targeted help
+            if (subject === 'math') {
+                if (question.includes('long division') || question.includes('divide')) {
+                    response += `<p><strong>Long Division Steps:</strong></p>
+                    <ol>
+                        <li><strong>Divide:</strong> Look at the first digit(s) of the dividend. How many times does the divisor fit into it?</li>
+                        <li><strong>Multiply:</strong> Multiply the divisor by the number you just found and write it below.</li>
+                        <li><strong>Subtract:</strong> Subtract what you just wrote from the dividend above it.</li>
+                        <li><strong>Bring down:</strong> Bring down the next digit from the dividend.</li>
+                        <li><strong>Repeat:</strong> Continue this process until you've used all digits.</li>
+                        <li><strong>Check:</strong> Multiply your answer by the divisor to verify it equals the original dividend.</li>
+                    </ol>
+                    <p><em>Example: To divide 156 ÷ 12, start by asking "how many 12s fit into 15?" (Answer: 1). Then multiply 12×1=12, subtract to get 3, bring down 6 to make 36, and so on.</em></p>`;
+                } else if (question.includes('fraction') && (question.includes('add') || question.includes('subtract'))) {
+                    response += `<p><strong>Adding/Subtracting Fractions:</strong></p>
+                    <ol>
+                        <li><strong>Find a common denominator:</strong> Look for the least common multiple (LCM) of both denominators.</li>
+                        <li><strong>Convert fractions:</strong> Change both fractions to equivalent fractions with the common denominator.</li>
+                        <li><strong>Add/subtract numerators:</strong> Keep the denominator the same and add or subtract only the top numbers.</li>
+                        <li><strong>Simplify:</strong> Reduce your answer to lowest terms by dividing both top and bottom by their greatest common factor.</li>
+                    </ol>
+                    <p><em>Example: 1/4 + 1/6 = 3/12 + 2/12 = 5/12</em></p>`;
+                } else if (question.includes('fraction') && (question.includes('multiply') || question.includes('times'))) {
+                    response += `<p><strong>Multiplying Fractions:</strong></p>
+                    <ol>
+                        <li><strong>Multiply straight across:</strong> Multiply the numerators together to get the new numerator.</li>
+                        <li><strong>Multiply denominators:</strong> Multiply the denominators together to get the new denominator.</li>
+                        <li><strong>Simplify:</strong> Reduce to lowest terms.</li>
+                    </ol>
+                    <p><em>Tip: You can simplify BEFORE multiplying by canceling common factors diagonally!</em></p>`;
+                } else if (question.includes('equation') || question.includes('solve for')) {
+                    response += `<p><strong>Solving Equations:</strong></p>
+                    <ol>
+                        <li><strong>Identify the variable:</strong> What are you solving for?</li>
+                        <li><strong>Isolate the variable:</strong> Use inverse operations to get the variable alone on one side.</li>
+                        <li><strong>Perform same operation on both sides:</strong> Whatever you do to one side, do to the other!</li>
+                        <li><strong>Simplify step by step:</strong> Work through one operation at a time.</li>
+                        <li><strong>Check your answer:</strong> Plug your solution back into the original equation.</li>
+                    </ol>`;
+                } else if (question.includes('percent') || question.includes('%')) {
+                    response += `<p><strong>Working with Percentages:</strong></p>
+                    <ol>
+                        <li><strong>Convert percent to decimal:</strong> Divide by 100 (move decimal two places left).</li>
+                        <li><strong>For "what is X% of Y":</strong> Multiply Y by the decimal form of X%.</li>
+                        <li><strong>For "X is what % of Y":</strong> Divide X by Y, then multiply by 100.</li>
+                        <li><strong>For percent increase/decrease:</strong> Find the difference, divide by original, multiply by 100.</li>
+                    </ol>
+                    <p><em>Example: 25% of 80 = 0.25 × 80 = 20</em></p>`;
+                } else if (question.includes('area') || question.includes('perimeter')) {
+                    response += `<p><strong>Area and Perimeter:</strong></p>
+                    <ul>
+                        <li><strong>Perimeter:</strong> Add up all the side lengths (distance around the shape).</li>
+                        <li><strong>Area of rectangle:</strong> length × width</li>
+                        <li><strong>Area of triangle:</strong> ½ × base × height</li>
+                        <li><strong>Area of circle:</strong> π × radius²</li>
+                        <li><strong>Circumference of circle:</strong> 2 × π × radius</li>
+                    </ul>
+                    <p><em>Don't forget to include square units for area (like cm²) and regular units for perimeter (like cm)!</em></p>`;
+                } else {
+                    response += `<p><strong>General Math Tips:</strong></p>
+                    <ul>
+                        <li>Read the problem carefully and identify what you're being asked to find.</li>
+                        <li>Write down the given information and what you need to find.</li>
+                        <li>Break complex problems into smaller, manageable steps.</li>
+                        <li>Show all your work - this helps you catch mistakes and earn partial credit.</li>
+                        <li>Check if your answer makes sense in the context of the problem.</li>
+                        <li>Use the inverse operation to verify your solution.</li>
+                    </ul>`;
+                }
+            } else if (subject === 'science') {
+                if (question.includes('scientific method') || question.includes('experiment')) {
+                    response += `<p><strong>The Scientific Method:</strong></p>
+                    <ol>
+                        <li><strong>Ask a Question:</strong> What do you want to learn or investigate?</li>
+                        <li><strong>Do Background Research:</strong> What is already known about this topic?</li>
+                        <li><strong>Form a Hypothesis:</strong> Make an educated guess (If... then... because...)</li>
+                        <li><strong>Test with an Experiment:</strong> Design a fair test with controlled variables.</li>
+                        <li><strong>Analyze Data:</strong> Look at your results and identify patterns.</li>
+                        <li><strong>Draw Conclusions:</strong> Was your hypothesis supported or not?</li>
+                        <li><strong>Communicate Results:</strong> Share what you learned.</li>
+                    </ol>`;
+                } else if (question.includes('photosynthesis')) {
+                    response += `<p><strong>Photosynthesis Overview:</strong></p>
+                    <ul>
+                        <li><strong>What:</strong> Process plants use to make food (glucose) using sunlight.</li>
+                        <li><strong>Where:</strong> Occurs in chloroplasts (contain chlorophyll, the green pigment).</li>
+                        <li><strong>Equation:</strong> Carbon dioxide + Water + Light Energy → Glucose + Oxygen</li>
+                        <li><strong>Reactants:</strong> CO₂, H₂O, and light energy go IN.</li>
+                        <li><strong>Products:</strong> Glucose (sugar) and O₂ come OUT.</li>
+                        <li><strong>Why it matters:</strong> Provides food and oxygen for most life on Earth!</li>
+                    </ul>`;
+                } else if (question.includes('cell') && !question.includes('cellular')) {
+                    response += `<p><strong>Cell Structure:</strong></p>
+                    <ul>
+                        <li><strong>Cell membrane:</strong> Controls what enters and exits the cell.</li>
+                        <li><strong>Cytoplasm:</strong> Jelly-like substance where organelles float.</li>
+                        <li><strong>Nucleus:</strong> Control center containing DNA.</li>
+                        <li><strong>Mitochondria:</strong> Powerhouse - makes energy (ATP).</li>
+                        <li><strong>Plant cells also have:</strong> Cell wall (rigid structure), chloroplasts (photosynthesis), large vacuole (storage).</li>
+                    </ul>
+                    <p><em>Remember: ALL cells have a membrane, cytoplasm, and DNA. Only plant cells have a cell wall!</em></p>`;
+                } else {
+                    response += `<p><strong>Science Study Tips:</strong></p>
+                    <ul>
+                        <li>Identify the key concepts and vocabulary terms.</li>
+                        <li>Draw diagrams to visualize processes and relationships.</li>
+                        <li>Use cause and effect thinking (if this happens, then what?).</li>
+                        <li>Connect new information to what you already know.</li>
+                        <li>Look for patterns in nature and scientific principles.</li>
+                        <li>Practice explaining concepts in your own words.</li>
+                    </ul>`;
+                }
+            } else if (subject === 'english') {
+                if (question.includes('essay') || question.includes('write')) {
+                    response += `<p><strong>Essay Writing Structure:</strong></p>
+                    <ol>
+                        <li><strong>Introduction:</strong> Hook your reader, provide context, end with your thesis statement.</li>
+                        <li><strong>Body Paragraphs (3-5):</strong> Each should have:
+                            <ul>
+                                <li>Topic sentence (main point)</li>
+                                <li>Evidence (quotes, examples, facts)</li>
+                                <li>Analysis (explain HOW the evidence supports your point)</li>
+                                <li>Transition to next paragraph</li>
+                            </ul>
+                        </li>
+                        <li><strong>Conclusion:</strong> Restate thesis (in different words), summarize main points, leave reader thinking.</li>
+                    </ol>
+                    <p><em>Remember: Don't just summarize - analyze and explain the significance!</em></p>`;
+                } else if (question.includes('grammar') || question.includes('punctuation')) {
+                    response += `<p><strong>Grammar Quick Tips:</strong></p>
+                    <ul>
+                        <li><strong>Complete sentences need:</strong> A subject (who/what) and a predicate (action/state of being).</li>
+                        <li><strong>Commas:</strong> Use in lists, after introductory phrases, to separate independent clauses with conjunctions.</li>
+                        <li><strong>Apostrophes:</strong> Show possession (John's book) or contractions (don't = do not).</li>
+                        <li><strong>Their/There/They're:</strong> Their = possession, There = place, They're = they are.</li>
+                        <li><strong>Your/You're:</strong> Your = possession, You're = you are.</li>
+                    </ul>`;
+                } else {
+                    response += `<p><strong>English Study Tips:</strong></p>
+                    <ul>
+                        <li>Read the question or prompt carefully - underline key words.</li>
+                        <li>Make an outline before writing longer responses.</li>
+                        <li>Support your ideas with specific evidence from the text.</li>
+                        <li>Use varied sentence structures and transitions.</li>
+                        <li>Proofread for grammar, spelling, and punctuation errors.</li>
+                        <li>Make sure every paragraph connects back to your main point.</li>
+                    </ul>`;
+                }
+            } else if (subject === 'history') {
+                response += `<p><strong>Analyzing Historical Events:</strong></p>
+                <ul>
+                    <li><strong>Context:</strong> When and where did this happen? What else was going on at the time?</li>
+                    <li><strong>Causes:</strong> What factors led to this event? (Political, economic, social, technological)</li>
+                    <li><strong>Key Figures:</strong> Who were the important people involved? What were their motivations?</li>
+                    <li><strong>Events:</strong> What actually happened? Create a timeline if helpful.</li>
+                    <li><strong>Consequences:</strong> What were the short-term and long-term effects?</li>
+                    <li><strong>Significance:</strong> Why does this event matter? How did it change things?</li>
+                    <li><strong>Multiple Perspectives:</strong> How might different groups view this event differently?</li>
+                </ul>
+                <p><em>Use specific dates, names, and places to strengthen your answer!</em></p>`;
+            } else if (subject === 'geography') {
+                response += `<p><strong>Geography Analysis Framework:</strong></p>
+                <ul>
+                    <li><strong>Location:</strong> Where exactly is this place? Use absolute (coordinates) or relative location.</li>
+                    <li><strong>Place:</strong> What are the physical features (landforms, climate) and human characteristics (culture, economy)?</li>
+                    <li><strong>Human-Environment Interaction:</strong> How do people adapt to, modify, and depend on their environment?</li>
+                    <li><strong>Movement:</strong> How do people, goods, and ideas move in and out of this region?</li>
+                    <li><strong>Region:</strong> What characteristics make this area similar to or different from others?</li>
+                </ul>
+                <p><em>Always support your answers with specific examples and use maps when possible!</em></p>`;
+            } else {
+                response += `<p><strong>General Study Tips:</strong></p>
+                <ul>
+                    <li>Read the question carefully and identify exactly what's being asked.</li>
+                    <li>Break complex questions into smaller, manageable parts.</li>
+                    <li>Use what you've learned in class as a foundation.</li>
+                    <li>Provide specific examples and evidence to support your points.</li>
+                    <li>Organize your thoughts before writing your final answer.</li>
+                    <li>Review your answer to make sure it directly addresses the question.</li>
+                </ul>`;
+            }
+
+            response += `<p style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                        <strong>💡 Remember:</strong> The best way to learn is by working through problems yourself! 
+                        Use these tips as a guide, then apply them to your specific question. If you're still stuck, 
+                        ask your teacher for help - they're there to support your learning!</p>`;
+
             return response;
         }
     </script>
